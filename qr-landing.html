@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Giveaway - Alumnx AI Labs 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --gold: #ffd700;
+            --blue: #3776ab;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            background-image: radial-gradient(circle at top right, rgba(55, 118, 171, 0.2), transparent);
+        }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem 1.5rem;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .logo { width: 60px; margin-bottom: 1.5rem; }
+        h1 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--gold); }
+        .subtitle { opacity: 0.7; margin-bottom: 2rem; font-size: 0.95rem; }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .card-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
+        .step-num { 
+            background: var(--blue); width: 28px; height: 28px; 
+            border-radius: 50%; display: flex; justify-content: center; 
+            align-items: center; font-weight: bold; font-size: 0.9rem;
+        }
+
+        textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            color: #ccc;
+            border: 1px solid #333;
+            padding: 1rem;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            height: 100px;
+            resize: none;
+            margin: 0.5rem 0 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 14px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-gold { background: var(--gold); color: #000; }
+        .btn-blue { background: var(--blue); color: #fff; margin-top: 0.8rem; }
+        .btn-green { background: #27ae60; color: #fff; }
+
+        input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+        input:focus { border-color: var(--blue); }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--blue);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 100;
+        }
+        
+        .success-screen { display: none; text-align: center; }
+        .success-screen h2 { color: #27ae60; font-size: 2.2rem; }
+        .confetti-icon { font-size: 4rem; margin-bottom: 1.5rem; display: block; }
+    </style>
+</head>
+<body>
+    <div id="toast">Copied! Now post on LinkedIn.</div>
+
+    <div class="container" id="main-form">
+        <h1 id="brand-title">Alumnx AI Labs</h1>
+        <p class="subtitle">Join our hourly giveaway draw!</p>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="step-num">1</div>
+                <strong>Review Post Template</strong>
+            </div>
+            <textarea id="template">Exploring the future of AI with Alumnx AI Labs! 🚀 Their booth is incredible. Check them out! @AlumnxAI #Python #AI #Giveaway #FutureOfAI #Booth2026</textarea>
+            <button class="btn-gold" onclick="copyTemplate()">📋 Copy & Post</button>
+            <button class="btn-blue" onclick="openLinkedIn()">🔗 Open LinkedIn</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="step-num">2</div>
+                <strong>Register Your Entry</strong>
+            </div>
+            <p style="font-size:0.85rem; opacity:0.6; margin-bottom:1rem;">Your name will appear on the booth TV instantly after you submit.</p>
+            <input type="text" id="name" placeholder="Your Full Name">
+            <input type="text" id="handle" placeholder="LinkedIn Username (e.g. johnsmith)">
+            <button class="btn-green" onclick="submitEntry()">🚀 Join the Wheel</button>
+        </div>
+    </div>
+
+    <div class="container success-screen" id="success">
+        <span class="confetti-icon">🎊</span>
+        <h2>You're In!</h2>
+        <p>Your name is now on the big screen wheel. Stay close for the next hourly draw!</p>
+        <button class="btn-blue" style="margin-top:2rem;" onclick="location.reload()">Add Another Entry</button>
+    </div>
+
+    <script>
+        function copyTemplate() {
+            const copyText = document.getElementById("template");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            
+            showToast("Template copied! Open LinkedIn next.");
+        }
+
+        function openLinkedIn() {
+            window.open('https://www.linkedin.com/feed/', '_blank');
+        }
+
+        async function submitEntry() {
+            const name = document.getElementById('name').value;
+            const handle = document.getElementById('handle').value;
+            
+            if (!name) {
+                alert("Please enter your name!");
+                return;
+            }
+
+            // MOCK SUBMISSION: In a real scenario, this would POST to a Google Script Webhook
+            // For the booth activation, we can simulate the SUCCESS screen instantly.
+            document.getElementById('main-form').style.display = 'none';
+            document.getElementById('success').style.display = 'block';
+
+            // IF the user has a webhook set up:
+            // await fetch('YOUR_APPS_SCRIPT_WEBHOOK_URL', {
+            //     method: 'POST',
+            //     mode: 'no-cors',
+            //     body: JSON.stringify({ name, handle, hashtag: '#AlumnxBooth2026' })
+            // });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.textContent = msg;
+            toast.style.display = "block";
+            setTimeout(() => { toast.style.display = "none"; }, 3000);
+        }
+    </script>
+</body>
+</html>

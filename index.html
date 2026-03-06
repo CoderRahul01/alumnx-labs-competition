@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumnx AI Labs - 2026 Booth Roulette</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="bg-blobs">
+        <div class="starfield"></div>
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    <div id="app-container">
+      <header class="glass-header">
+        <div class="header-left">
+          <div class="logo-container">
+            <span class="alumnx-logo">Alumnx <span class="accent-text">AI Labs</span></span>
+            <span class="pyconf-badge">2026 Booth</span>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <div class="stats-glass">
+            <div class="stat-item">
+              <span class="stat-label">Entries</span>
+              <span id="entries-count" class="stat-value">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Round</span>
+              <span id="current-round" class="stat-value">1</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+        <main>
+            <section id="wheel-section">
+                <div class="wheel-outer">
+                    <div id="wheel-pointer"></div>
+                    <canvas id="wheel-canvas"></canvas>
+                    <button id="spin-button">SPIN<br>DRAW</button>
+                </div>
+            </section>
+
+            <aside id="sidebar">
+                <div id="live-entries" class="glass-panel">
+                    <h3><span class="pulse">●</span> Active Entries</h3>
+                    <div id="entries-list" class="sidebar-list">
+                        <div class="placeholder-text">Wait for attendees...</div>
+                    </div>
+                </div>
+
+                <div id="recent-winners" class="glass-panel mt-20">
+                    <h3>🏆 Champions</h3>
+                    <div id="winners-list" class="sidebar-list">
+                        <div class="placeholder-text">Draw a winner!</div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+      <footer>
+        <div class="controls">
+          <button id="fullscreen-toggle" title="Full Screen Mode">
+            📺 Presentation
+          </button>
+          <button id="settings-toggle" title="Settings">⚙️ Admin</button>
+        </div>
+        <div class="next-draw">
+          NEXT DRAW: <span id="draw-timer">HOURLY</span>
+        </div>
+      </footer>
+
+      <!-- Settings Modal (Glassmorphism) -->
+      <div id="settings-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+          <h2>Admin Settings</h2>
+          <div class="admin-grid">
+            <div class="admin-card">
+              <label>Manual Entry</label>
+              <div class="input-group">
+                <input type="text" id="manual-name" placeholder="Name" />
+                <input
+                  type="text"
+                  id="manual-handle"
+                  placeholder="LinkedIn Handle"
+                />
+                <input
+                  type="text"
+                  id="manual-post"
+                  placeholder="Link to Promo Post (Optional)"
+                />
+                <button id="add-manual">Add</button>
+              </div>
+            </div>
+            <div class="admin-card">
+              <label>Controls</label>
+              <div class="button-row">
+                <button id="reset-data" class="danger">Reset All Data</button>
+                <button id="export-csv">Export CSV</button>
+              </div>
+            </div>
+          </div>
+          <button class="close-modal">Close</button>
+        </div>
+      </div>
+
+      <!-- Winner Celebration Overlay - Cinematic Breaking News -->
+      <div id="winner-modal" class="modal hidden">
+        <div class="modal-content">
+          <div class="winner-badge-overlay">PRIZE WINNER!</div>
+          
+          <div class="winner-pfp-container">
+            <img src="" alt="Winner" id="winner-avatar" class="modal-avatar">
+          </div>
+
+          <div class="winner-info-modal">
+            <h1 id="winner-name-modal" class="winner-name-modal">Winner Name</h1>
+            <p id="winner-handle-modal" class="winner-handle-modal">@handle</p>
+          </div>
+
+          <div class="reward-text">Visit the Alumnx Booth to claim your AI mystery box!</div>
+          
+          <button class="dismiss-overlay" style="margin-top: 2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 1rem 3rem; border-radius: 50px; color: #fff; font-weight: 800; cursor: pointer;">CONTINUE BOOTH DRAW</button>
+        </div>
+      </div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
