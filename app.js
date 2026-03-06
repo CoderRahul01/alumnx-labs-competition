@@ -64,6 +64,9 @@ class RouletteApp {
           setTimeout(() => modal.classList.add("hidden"), 600);
         }
         document.body.style.overflow = "auto";
+        
+        // Auto-increment Round for next draw
+        this.nextRound();
       });
     }
   }
@@ -162,19 +165,38 @@ class RouletteApp {
     const handleEl = document.getElementById("winner-handle-modal");
     const avatarEl = document.getElementById("winner-avatar");
 
+    // Clear previous classes
+    if (nameEl) nameEl.innerHTML = "";
+
+    // Build Name with Badge if Promoter
+    const nameText = document.createElement("span");
+    nameText.textContent = winner.name;
     if (nameEl) {
-        nameEl.innerHTML = `${winner.name} ${winner.postUrl ? '<span class="promoter-badge" style="font-size: 1rem; padding: 4px 12px; margin-left: 15px;">PROMOTER</span>' : ''}`;
+        nameEl.appendChild(nameText);
+        if (winner.postUrl) {
+            const badge = document.createElement("span");
+            badge.className = "promoter-badge";
+            badge.style.cssText = "font-size: 1.2rem; padding: 6px 16px; margin-left: 20px; vertical-align: middle;";
+            badge.textContent = "PROMOTER";
+            nameEl.appendChild(badge);
+        }
     }
+
     if (handleEl) handleEl.textContent = winner.handle || "@participant";
     if (avatarEl && winner.pfp) {
         avatarEl.src = winner.pfp;
     }
 
-    if (modal) {
-        modal.classList.remove("hidden");
-        modal.classList.add("active");
-        document.body.style.overflow = "hidden";
-    }
+    // Delay for suspense
+    setTimeout(() => {
+        if (modal) {
+            modal.classList.remove("hidden");
+            // Force reflow
+            modal.offsetHeight;
+            modal.classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+    }, 800);
   }
 
   celebrateWinner(winner) {
@@ -285,12 +307,18 @@ class RouletteApp {
         ctx.rotate(startAngle + sliceAngle / 2);
         ctx.textAlign = 'right';
         ctx.fillStyle = '#fff';
-        ctx.font = `bold ${Math.max(14, radius / 14)}px 'Outfit', sans-serif`;
+        
+        // Dynamic Font Scaling based on participant count
+        const baseFontSize = radius / 12;
+        const scaleFactor = Math.max(0.4, 1 - (participants.length / 60));
+        const fontSize = Math.max(10, baseFontSize * scaleFactor);
+        
+        ctx.font = `bold ${fontSize}px 'Outfit', sans-serif`;
         ctx.shadowBlur = 4;
         ctx.shadowColor = 'rgba(0,0,0,0.5)';
         
-        const displayName = p.name.length > 15 ? p.name.substring(0, 12) + '...' : p.name;
-        ctx.fillText(displayName, radius - 40, 6);
+        const displayName = p.name.length > 20 ? p.name.substring(0, 17) + '...' : p.name;
+        ctx.fillText(displayName, radius - 40, fontSize / 3);
         ctx.restore();
 
         const pointerPos = 3 * Math.PI / 2; 
@@ -379,16 +407,19 @@ class RouletteApp {
     const roundEl = document.getElementById("current-round");
     if (roundEl) roundEl.textContent = this.currentRound;
 
+    // LEFT: Attendance List
     const entriesList = document.getElementById("entries-list");
     if (entriesList) {
         entriesList.innerHTML = this.participants.length ? "" : '<div class="placeholder-text">Wait for attendees...</div>';
-        this.participants.slice(0, 5).forEach((p) => {
+        // Show more entries in the expanded layout
+        this.participants.slice(0, 10).forEach((p) => {
             const div = document.createElement("div");
             div.className = `entry-item ${p.postUrl ? 'promoter' : ''}`;
+            const shortName = p.name.length > 20 ? p.name.substring(0, 18) + '...' : p.name;
             div.innerHTML = `
                 <img class="entry-avatar" src="${p.pfp || 'https://unavatar.io/placeholder'}" alt="${p.name}">
                 <div class="entry-details">
-                    <span class="entry-name">${p.name} ${p.postUrl ? '<span class="promoter-badge">PROMOTER</span>' : ''}</span>
+                    <span class="entry-name" title="${p.name}">${shortName} ${p.postUrl ? '<span class="promoter-badge">PROMOTER</span>' : ''}</span>
                     <span class="entry-handle">${p.handle}</span>
                 </div>
             `;
@@ -396,10 +427,11 @@ class RouletteApp {
         });
     }
 
+    // RIGHT: Champions List (Grouped by Round)
     const winnersList = document.getElementById("winners-list");
     if (winnersList) {
         winnersList.innerHTML = this.winners.length ? "" : '<div class="placeholder-text">No winners yet.</div>';
-        this.winners.slice(0, 5).forEach((w) => {
+        this.winners.slice(0, 10).forEach((w) => {
             const div = document.createElement("div");
             div.className = "entry-item";
             div.style.borderLeft = "4px solid var(--accent-gold)";
@@ -426,6 +458,23 @@ class RouletteApp {
     localStorage.setItem("alumnx_participants", JSON.stringify(this.participants));
     localStorage.setItem("alumnx_winners", JSON.stringify(this.winners));
     localStorage.setItem("alumnx_round", this.currentRound);
+  }
+
+  nextRound() {
+    this.currentRound++;
+    this.saveState();
+    
+    // Animate Round counter
+    const roundEl = document.getElementById("current-round");
+    if (roundEl) {
+        roundEl.classList.remove("pulse-update");
+        void roundEl.offsetWidth; // Trigger reflow
+        roundEl.classList.add("pulse-update");
+        roundEl.textContent = this.currentRound;
+    }
+    
+    // Optional: Refresh entries list or clear current spin state
+    this.updateUI();
   }
 
   startSync() {
